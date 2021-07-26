@@ -41,11 +41,11 @@ model = PSPNet(num_classes=2, backbone='mobilenet_ca', downsample_factor=8, pret
 
 提供以下三种模型：
 
-|         训练权重          |                    下载路径（提取码）                     |
-| :-----------------------: | :-------------------------------------------------------: |
-|    骨干网络预训练模型     | https://pan.baidu.com/s/1ItPHuhGaeMFKj3b_wT4VwA（`rkii`） |
-|   VOC+SBD通用预训练模型   | https://pan.baidu.com/s/1ikRhKhxEovdvUsW1YYckRw（`d9u6`） |
-| WaterlinePSPNet预训练模型 | https://pan.baidu.com/s/1jUdcv6UNkeKVwKmF3WkXkg（`sqqv`） |
+|         训练权重          |                    下载路径                     | 提取码 |
+| :-----------------------: | :---------------------------------------------: | :----: |
+|    骨干网络预训练模型     | https://pan.baidu.com/s/1ItPHuhGaeMFKj3b_wT4VwA |  rkii  |
+|   VOC+SBD通用预训练模型   | https://pan.baidu.com/s/1ikRhKhxEovdvUsW1YYckRw |  d9u6  |
+| WaterlinePSPNet预训练模型 | https://pan.baidu.com/s/1jUdcv6UNkeKVwKmF3WkXkg |  sqqv  |
 
 
 
