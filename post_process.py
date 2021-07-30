@@ -184,16 +184,16 @@ class Line_of_horizont_fitting:
         x1 = (int(fit_line[2] + (w * fit_line[0])))
         y0 = (int(fit_line[3] - (h * fit_line[1])))
         y1 = (int(fit_line[3] + (h * fit_line[1])))
+
+        x0 = int(fit_line[2] - fit_line[0] * h)
+        y0 = int(fit_line[3] - fit_line[1] * w)
+        x1 = int(fit_line[2] + fit_line[0] * h)
+        y1 = int(fit_line[3] + fit_line[1] * w)
         flag = True
         # 拟合所有直线段
         if flag:
             # imageOUT = cv2.line(imageOUT, (x0, y0), (x1, y1), (255, 0, 255), 5)
-            imageOUT = cv2.line(img,    #img/edge_segmentation
-                                (int(fit_line[2] - fit_line[0] * h),
-                                 int(fit_line[3] - fit_line[1] * w)),
-                                (int(fit_line[2] + fit_line[0] * h),
-                                 int(fit_line[3] + fit_line[1] * w)),
-                                (255, 0, 255), 5)
+            imageOUT = cv2.line(img, (x0, y0),(x1, y1),(255, 0, 255), 5)
         # 不拟合，直接绘制轮廓线
         if not flag:
             for line in lines:
