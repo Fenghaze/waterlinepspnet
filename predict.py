@@ -25,7 +25,7 @@ from post_process import *
 pspnet = PSPNet(blend=False)
 
 # 测试图片文件夹
-def pred_file(imgs_path, save_mask=False):
+def pred_file(imgs_path, save_mask=False, fitline=True):
     total_time = 0
     imgs = os.listdir(imgs_path)
     for img in imgs:
@@ -44,7 +44,7 @@ def pred_file(imgs_path, save_mask=False):
 
         ######## 后处理 ########
         raw_img = cv2.cvtColor(numpy.asarray(input), cv2.COLOR_BGR2RGB)
-        mask_edge_detection(raw_img, str(img_name), pred)
+        mask_edge_detection(raw_img, str(img_name), pred, fitline=fitline)
         #######################
 
         u_time = time.time()
@@ -84,7 +84,7 @@ def pred_voc_test(test_txt, save_mask=False):
     avg_time = total_time/len(image_ids)
 
 # 测试单张图片
-def test_per_image(img, save_mask=False):
+def test_per_image(img, save_mask=False, fitline=True):
     img_name = img.split('/')[2].split('.jpg')[0]
     s_time = time.time()
     input = Image.open(img)
@@ -99,7 +99,7 @@ def test_per_image(img, save_mask=False):
 
     ######## 后处理 ########
     raw_img = cv2.cvtColor(numpy.asarray(input), cv2.COLOR_BGR2RGB)
-    mask_edge_detection(raw_img, str(img_name), pred)
+    mask_edge_detection(raw_img, str(img_name), pred, fitline=fitline)
     #######################
 
     u_time = time.time()
@@ -145,4 +145,4 @@ if __name__ == '__main__':
     # avg_time = pred_file(imgs_path)
     # print("speed(sec/img):", avg_time)
     img_path = "./test_img/1.jpg"
-    test_per_image(img_path)
+    test_per_image(img_path, True, True)

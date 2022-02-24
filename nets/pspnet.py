@@ -381,13 +381,14 @@ if __name__ == '__main__':
     input = torch.randn(2, 3, 473, 473)
     outputs = model(input)
     print(outputs.size())
+    print(model)
     #######查看网络结构#############
-    from torchsummary import summary
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model.to(device)
-    summary(model, (3, 473, 473))
+    # from torchsummary import summary
+    # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    # model.to(device)
+    # summary(model, (3, 473, 473))
 
-    #######网络结构可视化#############
+    ######网络结构可视化#############
     # from torchviz import make_dot
     # net_struct = make_dot(outputs)
     # net_struct.view()

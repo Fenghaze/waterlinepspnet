@@ -17,6 +17,7 @@ import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from PIL import Image
+import copy
 
 save_dir = './results/'
 
@@ -148,17 +149,17 @@ class Line_of_horizont_fitting:
     # 边缘检测得到二值图后，使用霍夫直线检测检测直线，并保存结果
     def detect_line(self, img, edge_segmentation, img_name, kernel_median_blur=50,
                                        predict_treshold=0.5, rho=2, theta=np.pi / 180, threshold=50, min_line_length=15,
-                                       max_line_gap=30):
+                                       max_line_gap=30, fitline=True):
         h, w = edge_segmentation.shape
         # 检测分割图像的边缘线段
         lines = self.hough_lines(edge_segmentation, rho, theta, threshold, min_line_length, max_line_gap)
-
+        for line in lines:
+            x1, y1, x2, y2 = line[0]  # 两点确定一条直线，这里就是通过遍历得到的两个点的数据 （x1,y1）(x2,y2)
+            houghOut = cv2.line(edge_segmentation, (x1, y1), (x2, y2), (0, 0, 255), 2)  # 在原图上画线
+        save_name = save_dir + img_name + '_houghline.png'
+        cv2.imwrite(save_name, houghOut)
         # 去掉垂直、倾角大的线段
         lines = self.delete_line(lines, h, w)
-
-        # for line in lines:
-        #     x1, y1, x2, y2 = line[0]  # 两点确定一条直线，这里就是通过遍历得到的两个点的数据 （x1,y1）(x2,y2)
-        #     cv2.line(img, (x1, y1), (x2, y2), (0, 0, 255), 2)  # 在原图上画线
 
 
         # 没有检测到吃水线段时，return -1
@@ -189,17 +190,19 @@ class Line_of_horizont_fitting:
         y0 = int(fit_line[3] - fit_line[1] * w)
         x1 = int(fit_line[2] + fit_line[0] * h)
         y1 = int(fit_line[3] + fit_line[1] * w)
-        flag = True
-        # 拟合所有直线段
-        if flag:
-            # imageOUT = cv2.line(imageOUT, (x0, y0), (x1, y1), (255, 0, 255), 5)
-            imageOUT = cv2.line(img, (x0, y0),(x1, y1),(255, 0, 255), 5)
         # 不拟合，直接绘制轮廓线
-        if not flag:
+        if not fitline:
             for line in lines:
                 for x1, y1, x2, y2 in line:
-                    imageOUT = cv2.line(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
-
+                    lineOut = cv2.line(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+            save_name = save_dir + img_name + '_line.png'
+            cv2.imwrite(save_name, lineOut)
+        # 拟合所有直线段
+        else:
+            # imageOUT = cv2.line(imageOUT, (x0, y0), (x1, y1), (255, 0, 255), 5)
+            fitlineOut = cv2.line(img, (x0, y0),(x1, y1),(255, 0, 255), 3)
+            save_name = save_dir + img_name + '_fitline.png'
+            cv2.imwrite(save_name, fitlineOut)
         # 过滤垂直的线，必须在二值图上进行操作
         # hline = cv2.getStructuringElement(cv2.MORPH_RECT, (int(h/(h*0.4)), 1))
         # imageOUT = cv2.morphologyEx(imageOUT, cv2.MORPH_OPEN, hline)
@@ -207,8 +210,8 @@ class Line_of_horizont_fitting:
         #waterline = cv2.cvtColor(imageOUT, cv2.COLOR_GRAY2RGB) # 转为三通道
         #imgadd = cv2.add(img, waterline)
 
-        save_name = save_dir + img_name + '_fitline.png'
-        cv2.imwrite(save_name, imageOUT)
+        # save_name = save_dir + img_name + '_fitline.png'
+        # cv2.imwrite(save_name, imageOUT)
 
     def horizont_line_pipeline_verbose(self,img, pred_img, kernel_median_blur=50,
                                        predict_treshold=0.5, rho=2, theta=np.pi / 180, threshold=20, min_line_length=20,
@@ -292,7 +295,7 @@ def denoise_mask(img_name, img):
     cv2.imwrite(save_name, img)
 
 # 1、对分割预测的mask进行边缘检测
-def mask_edge_detection(img, img_name, pred_mask):
+def mask_edge_detection(img, img_name, pred_mask, fitline=True):
     """
     :param img: 原图
     :param pred_mask: 分割预测的mask
@@ -306,11 +309,11 @@ def mask_edge_detection(img, img_name, pred_mask):
     # canny 边缘检测
     pred = cv2.GaussianBlur(pred_mask, (3, 3), 0)
     edge = cv2.Canny(pred, 50, 150) #[h,w]
-
+    save_name = save_dir + img_name +'_edge.png'
+    cv2.imwrite(save_name, edge)
     # 方案二：检测边缘检测的直线
-    fit.detect_line(img, edge, img_name)
-    #save_name = save_dir + 'test_edge.png'
-    #cv2.imwrite(save_name, canny)
+    fit.detect_line(img, edge, img_name, fitline=fitline)
+
 
     # 方案三：使用边缘检测，提取边缘检测的轮廓
     #extract_contours_fitline(edge, img_name, img)

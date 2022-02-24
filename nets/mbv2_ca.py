@@ -225,7 +225,7 @@ class MBV2_CA(nn.Module):
 def mbv2_ca(pretrained=False, **kwargs):
     model = MBV2_CA(num_classes=1000, **kwargs)
     if pretrained:
-        model.load_state_dict(torch.load("model_data/mbv2_ca.pth"), strict=False)
+        model.load_state_dict(torch.load("../model_data/mbv2_ca.pth"), strict=False)
         print("load backbone success!")
     return model
 
