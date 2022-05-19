@@ -145,4 +145,5 @@ if __name__ == '__main__':
     # avg_time = pred_file(imgs_path)
     # print("speed(sec/img):", avg_time)
     img_path = "./test_img/1.jpg"
-    test_per_image(img_path)
+    #test_per_image(img_path, True)
+    pred_file("./other", True)
